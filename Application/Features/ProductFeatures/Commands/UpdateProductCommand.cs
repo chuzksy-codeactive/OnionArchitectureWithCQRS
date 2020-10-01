@@ -1,4 +1,6 @@
-﻿using Application.Interfaces;
+﻿using Application.Exceptions;
+using Application.Interfaces;
+using Domain.Entities;
 using MediatR;
 using System.Linq;
 using System.Threading;
@@ -26,17 +28,17 @@ namespace Application.Features.ProductFeatures.Commands
 
                 if (product == null)
                 {
-                    return default;
+                    throw new NotFoundException(nameof(Product), command.Id);
                 }
-                else
-                {
-                    product.Barcode = command.Barcode;
-                    product.Name = command.Name;
-                    product.Rate = command.Rate;
-                    product.Description = command.Description;
-                    await _context.SaveChangesAsync();
-                    return product.Id;
-                }
+
+                product.Barcode = command.Barcode;
+                product.Name = command.Name;
+                product.Rate = command.Rate;
+                product.Description = command.Description;
+
+                await _context.SaveChangesAsync(cancellationToken);
+
+                return product.Id;
             }
         }
     }

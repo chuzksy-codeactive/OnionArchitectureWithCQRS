@@ -34,7 +34,7 @@ namespace Application.Features.ProductFeatures.Commands
                 product.ConfidentialData = command.ConfidentialData;
 
                 _context.Products.Add(product);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
                 return product.Id;
             }

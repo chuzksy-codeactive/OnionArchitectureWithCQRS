@@ -1,4 +1,6 @@
-﻿using Application.Interfaces;
+﻿using Application.Exceptions;
+using Application.Interfaces;
+using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -20,9 +22,16 @@ namespace Application.Features.ProductFeatures.Commands
             public async Task<int> Handle(DeleteProductByIdCommand command, CancellationToken cancellationToken)
             {
                 var product = await _context.Products.Where(a => a.Id == command.Id).FirstOrDefaultAsync();
-                if (product == null) return default;
+
+                if (product == null)
+                {
+                    throw new NotFoundException(nameof(Product), command.Id);
+                }
+
                 _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
+
+                await _context.SaveChangesAsync(cancellationToken);
+
                 return product.Id;
             }
         }
