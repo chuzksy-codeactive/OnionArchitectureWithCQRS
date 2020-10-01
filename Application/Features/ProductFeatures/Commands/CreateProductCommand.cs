@@ -10,8 +10,11 @@ namespace Application.Features.ProductFeatures.Commands
     {
         public string Name { get; set; }
         public string Barcode { get; set; }
+        public bool IsActive { get; set; } = true;
         public string Description { get; set; }
         public decimal Rate { get; set; }
+        public decimal BuyingPrice { get; set; }
+        public string ConfidentialData { get; set; }
         public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, int>
         {
             private readonly IApplicationDbContext _context;
@@ -22,12 +25,17 @@ namespace Application.Features.ProductFeatures.Commands
             public async Task<int> Handle(CreateProductCommand command, CancellationToken cancellationToken)
             {
                 var product = new Product();
+
                 product.Barcode = command.Barcode;
                 product.Name = command.Name;
                 product.Rate = command.Rate;
                 product.Description = command.Description;
+                product.BuyingPrice = command.BuyingPrice;
+                product.ConfidentialData = command.ConfidentialData;
+
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
+
                 return product.Id;
             }
         }

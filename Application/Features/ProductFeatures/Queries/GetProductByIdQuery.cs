@@ -20,7 +20,9 @@ namespace Application.Features.ProductFeatures.Queries
             public async Task<Product> Handle(GetProductByIdQuery query, CancellationToken cancellationToken)
             {
                 var product = _context.Products.Where(a => a.Id == query.Id).FirstOrDefault();
+
                 if (product == null) return null;
+
                 return product;
             }
         }
