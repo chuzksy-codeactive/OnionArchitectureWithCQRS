@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.ProductFeatures.Commands
 {
-    public class CreateProductCommand : IRequest<int>
+    public class CreateProductCommand : IRequest<Response<Product>>
     {
         public string Name { get; set; }
         public string Barcode { get; set; }
@@ -15,28 +15,29 @@ namespace Application.Features.ProductFeatures.Commands
         public decimal Rate { get; set; }
         public decimal BuyingPrice { get; set; }
         public string ConfidentialData { get; set; }
-        public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, int>
+        public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Response<Product>>
         {
             private readonly IApplicationDbContext _context;
             public CreateProductCommandHandler(IApplicationDbContext context)
             {
                 _context = context;
             }
-            public async Task<int> Handle(CreateProductCommand command, CancellationToken cancellationToken)
+            public async Task<Response<Product>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
             {
-                var product = new Product();
-
-                product.Barcode = command.Barcode;
-                product.Name = command.Name;
-                product.Rate = command.Rate;
-                product.Description = command.Description;
-                product.BuyingPrice = command.BuyingPrice;
-                product.ConfidentialData = command.ConfidentialData;
+                var product = new Product
+                {
+                    Barcode = command.Barcode,
+                    Name = command.Name,
+                    Rate = command.Rate,
+                    Description = command.Description,
+                    BuyingPrice = command.BuyingPrice,
+                    ConfidentialData = command.ConfidentialData
+                };
 
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync(cancellationToken);
 
-                return product.Id;
+                return Response.Ok("Product is created successfuly", product);
             }
         }
     }
