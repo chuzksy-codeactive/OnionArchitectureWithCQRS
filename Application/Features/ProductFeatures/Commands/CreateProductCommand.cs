@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Wrappers;
 using Domain.Entities;
 using MediatR;
 using System.Threading;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.ProductFeatures.Commands
 {
-    public class CreateProductCommand : IRequest<Response<Product>>
+    public class CreateProductCommand : IRequestWrapper<Product>
     {
         public string Name { get; set; }
         public string Barcode { get; set; }
@@ -15,7 +16,7 @@ namespace Application.Features.ProductFeatures.Commands
         public decimal Rate { get; set; }
         public decimal BuyingPrice { get; set; }
         public string ConfidentialData { get; set; }
-        public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Response<Product>>
+        public class CreateProductCommandHandler : IHandlerWrapper<CreateProductCommand, Product>
         {
             private readonly IApplicationDbContext _context;
             public CreateProductCommandHandler(IApplicationDbContext context)
